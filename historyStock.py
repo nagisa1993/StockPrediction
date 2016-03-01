@@ -27,8 +27,8 @@ for i in stockarray:
 
 #cursor.execute('drop table TrueTimeValue')
 
-#cursor.execute('create table HistoryValue (ID INT PRIMARY KEY NOT NULL, Symbol varchar(20), TadeTime date, OpenPrice float, HighPrice float, LowPrice float, ClosePrice float, Volume int)')
-#cursor.execute('create table TrueTimeValue (ID INT PRIMARY KEY NOT NULL, Symbol varchar(20), TradePrice float, TadeTime date, Volume int)')
+cursor.execute('create table HistoryValue (ID INT PRIMARY KEY NOT NULL, Symbol varchar(20), TadeTime date, OpenPrice float, HighPrice float, LowPrice float, ClosePrice float, Volume int)')
+cursor.execute('create table TrueTimeValue (ID INT PRIMARY KEY NOT NULL, Symbol varchar(20), TradePrice float, TadeTime date, Volume int)')
 print "Opened database successfully";
 cursor.close()
 conn.close()
