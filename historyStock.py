@@ -12,7 +12,7 @@ cursor = conn.cursor()
 for i in stockarray:
 	dic = stockarray[0]
 	StockID = dic["Symbol"]
-	Volume = int(dic["Volume"]))
+	Volume = int(dic["Volume"])
 	FullName = ""
 	TadeTime = dic["Date"]
 	OpenPrice = dic["Open"]
