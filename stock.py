@@ -8,7 +8,7 @@ today = datetime.date.today()
 oneday = datetime.timedelta(days=1)
 yesterday = today - oneday
 ##################connect the sqlite
-conn = lite.connect('StockHistory.db')
+conn = lite.connect('stockHistory.db')
 cursor = conn.cursor()
 
 # ################## find the max date of the records in DB
