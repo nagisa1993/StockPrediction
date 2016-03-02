@@ -13,17 +13,16 @@ cursor = conn.cursor()
 ############### get the records ranging from max date in DB to yesterday
 BeginTime = now.replace(hour=9, minute=0, second=0, microsecond=0)
 EndTime = now.replace(hour=16, minute=0, second=0, microsecond=0)
-LocalTime = T.strftime('%Y-%m-%d ',T.localtime(T.time()))
+# LocalTime = T.strftime('%Y-%m-%d ',T.localtime(T.time()))
 while (now > BeginTime and now< EndTime):
-	# StockList = ['YHOO','GOOG','AAPL','TWTR','AMZN']
-	StockList = ['GOOG']
+	StockList = ['YHOO','GOOG','AAPL','TWTR','AMZN']
 	for stock in StockList:
 		Symbol = stock
 		Company = Share('GOOG')
 		Price = Company.get_price()
 		Time = Company.get_trade_datetime()
 		Volume = Company.get_volume()
-		purchases = [(Symbol, Price, Time, Volume)]
+		purchases = (Symbol, Price, Time, Volume)
 		cursor.execute('INSERT INTO TrueTimeValue VALUES (?,?,?,?)', purchases)
 		conn.commit()
 	cursor.execute('select * from TrueTimeValue')
