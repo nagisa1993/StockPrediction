@@ -10,6 +10,9 @@ now = datetime.datetime.now()
 ##################connect the sqlite
 conn = lite.connect('StockHistory.db')
 cursor = conn.cursor()
+################## every time empty data
+cursor.execute('delete from TrueTimeValue')
+conn.commit()
 ############### get the records ranging from max date in DB to yesterday
 BeginTime = now.replace(hour=9, minute=0, second=0, microsecond=0)
 EndTime = now.replace(hour=16, minute=0, second=0, microsecond=0)
@@ -18,13 +21,14 @@ while (now > BeginTime and now< EndTime):
 	StockList = ['YHOO','GOOG','AAPL','TWTR','AMZN']
 	for stock in StockList:
 		Symbol = stock
-		Company = Share('GOOG')
+		Company = Share(stock)
 		Price = Company.get_price()
 		Time = Company.get_trade_datetime()
 		Volume = Company.get_volume()
 		purchases = (Symbol, Price, Time, Volume)
 		cursor.execute('INSERT INTO TrueTimeValue VALUES (?,?,?,?)', purchases)
 		conn.commit()
+		Company.refresh()
 	cursor.execute('select * from TrueTimeValue')
 	print(cursor.fetchall())
 	T.sleep(60)
