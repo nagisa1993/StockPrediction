@@ -5,13 +5,21 @@ import fetchdata
 import csv
 import itertools
 
-
-
 alpha = 0.005
 beta = 11.1
 M = 5
 N = 10
 
+def bayes_predict(name='YHOO'):
+    # #read data from db
+    global Y
+    Y = fetchdata.get_data(name)
+    print 'The trend is :'
+    print Y
+    predicted_price = getm(N+1)[0][0]
+    return predicted_price
+
+# Y = fetchdata.get_data('YHOO')
 
 # #loadCsv
 # def loadCsv(filename):
@@ -39,11 +47,7 @@ N = 10
 # dataset = list(itertools.chain(*dataset))
 
 
-# #read data from db
 
-Y = fetchdata.get_data('AAPL')
-print 'The trend is :'
-print Y
 
 
 # try to output image, not implemented yet #######
@@ -113,13 +117,14 @@ def getm(x):
     m = beta * fy2.T.dot(S).dot(temp)
     return m
 
-def bayes_predict():
-    predicted_price = getm(N+1)[0][0]
-    return predicted_price
 
 
-price = bayes_predict()
-print 'the predicted price is %f' % price
+
+if __name__=='__main__':
+    print bayes_predict('AAPL')
+
+# price = bayes_predict('AAPL')
+# print 'the predicted price is %f' % price
 
 # print 'the absolute mean error is %f' % abs(predicted_price - actual_price[0])
 # print 'the relative error is %f' % (abs(predicted_price - actual_price[0]) / float(actual_price[0]))

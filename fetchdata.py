@@ -2,7 +2,7 @@ import sqlite3
 import numpy as np
 
 
-def get_data(stock_name):
+def get_data(stock_name='YHOO'):
     conn = sqlite3.connect('stockHistory.db')
     cursor = conn.cursor()
     stock_name = tuple([stock_name])
@@ -23,4 +23,4 @@ def get_data(stock_name):
 
 
 if __name__=='__main__':
-    get_data('YHOO')
+    print get_data('AAPL')
