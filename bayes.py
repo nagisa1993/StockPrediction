@@ -107,7 +107,7 @@ def getm(x):
         fy = getfy(i)
         # print fy
         # print Y[i-1]
-        temp = fy * Y[i - 1] + temp
+        temp += fy * Y[i - 1]
         # print temp
     fy2 = getfy(x)
     # print temp
