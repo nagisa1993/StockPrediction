@@ -12,16 +12,16 @@ def svm_predict(days=10, offset=0, name='YHOO'):
 
 
     # Fit regression model
-    # svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
-    svr_lin = SVR(kernel='linear', C=1e3)
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    # svr_lin = SVR(kernel='linear', C=1e3)
     # svr_poly = SVR(kernel='poly', C=1e3, degree=2)
-    # y_rbf = svr_rbf.fit(X, y).predict(Z)
-    y_lin = svr_lin.fit(X, y).predict(Z)
+    y_rbf = svr_rbf.fit(X, y).predict(Z)
+    # y_lin = svr_lin.fit(X, y).predict(Z)
     # y_poly = svr_poly.fit(X, y).predict(Z)
     # print y_rbf
     # print y_lin
     # print y_poly
-    return list(y_lin)
+    return list(y_rbf)
 
 if __name__=='__main__':
     print svm_predict(10, 2, 'AAPL')

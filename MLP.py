@@ -2,6 +2,7 @@ import numpy as np
 import fetchdata
 from sklearn.neural_network import MLPRegressor
 
+
 def mlp_predict(days, offset, name='YHOO'):
     N = 30
     # Generate sample data
