@@ -1,0 +1,240 @@
+<html>
+{% block title %}Flask{% endblock %}
+
+{% block background %}
+<head>
+<!-- <script src="../static/js/bootstrap-datetimepicker.js"></script> -->
+<link type="text/css" rel="stylesheet" href="../static/css/bootstrap-datetimepicker.min.css" />
+<link href="../static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="../static/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link href="../static/css/bootstrap-datetimepicker.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" type="text/css" href="../static/css/hsd.css" />
+<link rel="stylesheet" type="text/css" href="../static/css/finance.css" />
+<style>
+/*****************************layout*****************************/
+    body {
+    background-image: url(http://cache3.asset-cache.net/xd/513613106.jpg?v=1&c=IWSAsset&k=2&d=62CA815BFB1CE48010D0F2FCC3A0EA462B6A5D266AEA58DB3A545B36FD6752504C89169F47E31A24);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #464646;
+    }
+
+    .container{
+        position:relative;
+    }
+
+    .search{
+        position:absolute;
+        left: 0;
+        top: 10%;
+        width: 100%;
+        text-align: center;
+    }
+
+    img{
+        width:100%;
+        height:100%;
+        /*border:0;*/
+        opacity: 0;
+    }
+
+    /*.login{
+        position: absolute;
+        top: 8px;
+        right: 16px;
+        font-size: 18px;
+    }*/
+
+    .datepicker{
+        position: absolute;
+        /*top: 60%;*/
+        left: 225px;
+        text-align: center;
+    }
+
+    .datepicker2{
+        position: absolute;
+       /* top: 60%;*/
+        left: 525px;
+        text-align: center;
+    }
+
+    .graph{
+        position: absolute;
+        background-color: #FFFFFF;
+        left: 200px;
+        top:30%;
+        width: 70%;
+        text-align: center;
+        opacity: 0.7;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+/**************************view control**************************/
+/*----------------middle(search text & button)-----------------*/
+    /*search button*/
+    .searchbtn{
+    background-color: #39d396;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+
+    }
+
+    .searchbtn span {
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+      transition: 0.5s;
+    }
+
+    .searchbtn span:after {
+      content: '>>';
+      position: absolute;
+      opacity: 0;
+      top: 0;
+      right: -20px;
+      transition: 0.5s;
+    }
+
+    .searchbtn:hover span{
+        padding-right: 25px;
+    }
+
+    .searchbtn:hover span:after {
+      opacity: 1;
+      right: 0;
+    }
+    
+    /*search text*/
+    .searchtext{
+        padding: 15px 32px;
+        text-align: left;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        border: none;
+        width: 50%;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.2), 0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+
+    /*graph container*/
+    .graph #content-container{
+        color: #000000;
+    }
+
+/**************************navigation bar**************************/
+    .nav ul {
+      list-style: none;
+      background-color: #444;
+      text-align: center;
+      padding: 0;
+      margin: 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+
+    .nav li {
+      /*font-family: "Microsoft YaHei" ! important;*/
+      /*font-size: 30px;*/
+      line-height: 40px;
+      height: 40px;
+      border-bottom: 1px solid #888;
+    }
+     
+    .nav a {
+      text-decoration: none;
+      color: #fff;
+      display: block;
+      transition: .3s background-color;
+    }
+     
+    .nav a:hover {
+      background-color: #111;
+    }
+     
+    .nav a.active {
+      background-color: #39d396;
+      color: #fff;
+      cursor: default;
+    }
+     
+    @media screen and (min-width: 600px) {
+    .nav li {
+        width: 120px;
+        border-bottom: none;
+        height: 50px;
+        line-height: 50px;
+        font-size: 1.2em;
+    }
+     
+    .nav li {
+        display: inline-block;
+        margin-right: -8px;
+    }}
+    
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="nav">
+        <ul>
+        <li class="search_nav"><a class="active" href="index.html">Search</a></li>
+        <li class="predict"><a href="project2.html">Predict</a></li>
+        <li class="login" style="float:right"><a href="#">Login</a></li>
+        </ul>
+    </div>
+</header>
+
+
+{% endblock %}
+
+{% block content %}
+<div class = "container">
+    <img src = "http://cache3.asset-cache.net/xd/513613106.jpg?v=1&c=IWSAsset&k=2&d=62CA815BFB1CE48010D0F2FCC3A0EA462B6A5D266AEA58DB3A545B36FD6752504C89169F47E31A24" width = "1000" height = "800">
+
+    <div class = "search">
+        <section>
+            <input type="text" class = "searchtext" id="stockid" name="stockid" placeholder="Input stock symbol">
+            <button class = "searchbtn" onclick="search()" id="searchbtn"><span>Search</span></button>
+        </section>
+        <section>
+            <div class = "datepicker">
+                <div class="input-append date form_date" data-date-format="mm dd yyyy">
+                    <input size="8" type="text" value="" readonly placeholder="from date">
+                    <span class="add-on"><i class="icon-th"></i></span>
+                </div>
+            </div>
+
+            <div class = "datepicker2">
+                <div class="input-append date form_date" data-date-format="mm dd yyyy">
+                    <input size="8" type="text" value="" readonly placeholder="to date">
+                    <span class="add-on"><i class="icon-th"></i></span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class = "login">
+        <button class = "loginbtn" onclick="login()" id="loginbtn">Log in</button>
+        <button class = "signupbtn" onclick="signup()" id="signupbtn">Sign up</button>
+    </div>
+
+</div>
+{% endblock %}
+</body>
+</html>

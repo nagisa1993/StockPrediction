@@ -1,0 +1,53 @@
+{% extends "project.html" %}
+
+{% block title %} predict {% endblock %}
+
+{% block page_content %}
+
+<header>
+    <div class="nav">
+	    <ul>
+	    <li class="search_nav"><a href="project.html">Search</a></li>
+	    <li class="predict_nav"><a class="active" href="project2.html">Predict</a></li>
+	    <li class="login" style="float:right"><a href="#">Login</a></li>
+	    </ul>
+    </div>
+</header>
+
+<div class = "container">
+	<div class="img-block"></div>
+
+	<div class="nav_left">
+	<ul>
+	  <li><a href="#" id = "idct1">Indicator1</a></li>
+	  <li><a href="#" id = "idct2">Indicator2</a></li>
+	  <li><a href="#" id = "idct3">Indicator3</a></li>
+	  <li><a href="#" id = "idct4">Indicaotr4</a></li>
+	</ul>
+	</div>
+
+	<div class = "predict">
+		<section>
+			<input type="text" class = "predicttext" id="stockid" name="stockid" placeholder="Input stock symbol"><br>
+			<button class = "st_predictbtn" onclick="st_predict()" id="st_predictbtn"><span>Short Time Predict</span></button>
+			<button class = "lt_predictbtn" onclick="lt_predict()" id="lt_predictbtn"><span>Long Time Predict</span></button>
+		</section>
+	</div>
+</div>
+
+<script>
+	function predict(){
+
+	}
+
+	function login(){
+
+	}
+
+	function signup(){
+
+	}
+</script>
+
+{% endblock %}
+
