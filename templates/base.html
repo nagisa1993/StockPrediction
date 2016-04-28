@@ -14,6 +14,7 @@
 {% block header %}
 
 <header>
+
     <div class="nav">
 	    <ul>
 	    <li class="search_nav"><a class="active" href="search">Search</a></li>
@@ -21,6 +22,7 @@
 	    <li class="login" style="float:right"><a href="#">Login</a></li>
 	    </ul>
     </div>
+
 </header>
 {% endblock %}
 
@@ -28,10 +30,14 @@
 
 		<div class="img-block"></div>
 		<section class = "search">
+		<form action="" method="post">
 		<div>
-			<input type="text" class = "searchtext" id="stockid" name="stockid" placeholder="Input stock symbol">
-			<button class = "searchbtn" onclick="search()" id="searchbtn"><span>Search</span></button>
+			<input type="text" class = "searchtext" id="stockid" name="stockid" value="{{
+          request.form.stockid }}"  placeholder="Input stock symbol">
+          	<input type="submit" class = "searchbtn" onclick="search()" id="searchbtn" value="Check">
+			<!-- <button type = "submit"  value="searchstock" ><span>Search</span></button> -->
 		</div>
+		</form>
 		</section>
 
 		{% block graph %}

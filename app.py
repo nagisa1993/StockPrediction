@@ -1,8 +1,9 @@
 from flask import Flask, session, request, redirect, url_for, render_template
 import sqlite3 as lite
 import svm
-import MLP
+# import MLP
 import bayes
+import pdb
 
 app = Flask(__name__)
 
@@ -12,8 +13,15 @@ app = Flask(__name__)
 # app.config.from_object(__name__)
 # Session(app)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        #pdb.set_trace()
+        #return '<h3>please log in firstly.</h3>'
+        if 'Check' in request.form.values():
+            #return '<h3>please log in firstly.</h3>'
+            # pdb.set_trace()
+            return render_template('search.html', par=str(request.form['stockid']))
     return render_template('index.html')
 
 @app.route('/search')
@@ -29,31 +37,7 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-# @app.route('/', methods=['GET', 'POST'])
-# def home():
-#     return '<h1>Home</h1>'
 
-@app.route('/signin', methods=['GET'])
-def signin_form():
-    return '''<form action="/signin" method="post">
-              <p><input name="username"></p>
-              <p><input name="password" type="password"></p>
-              <p><button type="submit">Sign In</button></p>
-              </form>'''
-
-
-@app.route('/predict', methods=['GET'])
-def predict_form():
-    return '''<form action="/predict" method="post">
-              <select id="ddlViewBy" name="s1">
-              <option id="o1" value="AAPL">AAPL</option>
-              <option id="o2" value="GOOG">GOOG</option>
-              <option id="o3" value="AMZON">AMZN</option>
-              </select>
-              <p><input name="begindate"></p>
-              <p><input name="enddate"></p>
-              <input type="submit" name="add" value="Check">
-              </form>'''
 
 
 @app.route('/signin', methods=['POST'])
