@@ -2,7 +2,7 @@ from flask import Flask, session, request, redirect, url_for, render_template, a
 import sqlite3 as lite
 from flask import make_response
 import svm
-# import MLP
+import MLP
 import bayes
 import datetime
 import json
@@ -212,7 +212,7 @@ def predict(stockname,chartID = 'chart_ID', chart_type = 'line', chart_height = 
     # return '<h3>please log in firstly.</h3>'
     liststock=svm.svm_predict(15,0,stockname)
     # return '<h3>please log in firstly.</h3>'
-    liststock1=[90,90,90,90,90,90,90,90,90,90,90,90,90,90,90]
+    liststock1= MLP.mlp_predict(15,0,stockname)
     # liststock=[2,2,2,2,2,2,2,2,2,2]
     # pdb.set_trace()
     #return '<h3>please log in firstly.</h3>'

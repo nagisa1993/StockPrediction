@@ -20,7 +20,8 @@ def svm_predict(days=10, offset=0, name='YHOO'):
     # print y_rbf
     # print y_lin
     # print y_poly
-    return list(y_rbf)
+    a = [round(i, 3) for i in list(y_rbf)]
+    return a
 
 if __name__=='__main__':
     print svm_predict(100, 0, 'AAPL')
