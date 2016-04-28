@@ -8,8 +8,8 @@ body {
 	}
 
 	.container{
-		z-index: 1;
-		position:fixed;
+		text-align: center;
+		position:relative;
 	}
 
 	.search{
@@ -95,10 +95,7 @@ body {
 
 
 /**************************navigation bar**************************/
-	.nav{
-		z-index: 10;
-		position: fixed;
-	}
+	
 	.nav ul {
 	  list-style: none;
 	  background-color: #444;

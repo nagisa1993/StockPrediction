@@ -14,15 +14,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('project.html')
-
-@app.route('/index2')
-def index2():
     return render_template('index.html')
 
-@app.route('/predict2')
-def predict2():
-    return render_template('project2.html')
+@app.route('/search')
+def search():
+    return render_template('search.html')
+
+@app.route('/predict')
+def predict():
+    return render_template('predict.html')
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -72,51 +72,23 @@ def signin():
     return '<h3>Bad username or password.</h3>'
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    if request.method == 'POST':
-        if session['user'] == "":
-            # return session['user']
-            return '<h3>please log in firstly.</h3>'
-        session['name'] = request.form['s1']
-        session['begindate'] = request.form['begindate']
-        session['enddate'] = request.form['enddate']
-        # return session['begindate']
-        if 'Check' in request.form.values():
-            return redirect(url_for('baz'))
-            # return session['begindate']
-    elif request.method == 'GET':
-        return render_template('contact.html', form=form)
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     if request.method == 'POST':
+#         if session['user'] == "":
+#             # return session['user']
+#             return '<h3>please log in firstly.</h3>'
+#         session['name'] = request.form['s1']
+#         session['begindate'] = request.form['begindate']
+#         session['enddate'] = request.form['enddate']
+#         # return session['begindate']
+#         if 'Check' in request.form.values():
+#             return redirect(url_for('baz'))
+#             # return session['begindate']
+#     elif request.method == 'GET':
+#         return render_template('contact.html', form=form)
 
 
-@app.route('/baz')
-def baz():
-    if session['user'] == "":
-        # return session['user']
-        return '<h3>please log in firstly.</h3>'
-    name = session['name']
-    conn = lite.connect('StockHistory.db')
-    cursor = conn.cursor()
-    # where Symbol ='"+ name +"' and TadeTime between '"+session['begindate'] +"'and '"+session['enddate']+"'"
-    cursor.execute("select * from HistoryValue where Symbol ='" + name + "' and TadeTime between '" + session[
-        'begindate'] + "'and '" + session['enddate'] + "'")
-    array = cursor.fetchall()
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return render_template('foo.html', my_list=array)
-
-
-# @app.route('/index')
-# def index(chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
-#     liststock=svm_predict(days=10, offset=0, name='YHOO')
-#     listtime=[1,2,3,4,5,6,7,8,9,10]
-#     chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
-#     series = [{"name": 'Label1', "data": liststock}]
-#     title = {"text": 'SVM'}
-#     xAxis = {"categories": listtime}
-#     yAxis = {"title": {"text": 'yAxis Label'}}
-#     return render_template('index.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
 
 ########################
