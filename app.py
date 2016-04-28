@@ -2,7 +2,7 @@ from flask import Flask, session, request, redirect, url_for, render_template, a
 import sqlite3 as lite
 from flask import make_response
 import svm
-import MLP
+# import MLP
 import bayes
 import datetime
 import json
@@ -43,7 +43,9 @@ def index():
             # return '<h3>please log in firstly.</h3>'
             # pdb.set_trace()
             # return render_template('predict.html', par = str(request.form['stockid']))
-            return redirect(url_for('predict'))
+            # return str(request.form['stockid'])
+            return redirect(url_for('predict', stockname=request.form['stockid']))
+
     return render_template('index.html')
 
 @app.route('/search/')
@@ -202,20 +204,22 @@ def create_task():
     tasks.append(task)
     return jsonify({'task': task}), 201
 ##############################graph
-@app.route('/predict')
-def predict(chartID = 'chart_ID', chart_type = 'line', chart_height = 350): 
+@app.route('/predict/<stockname>')
+def predict(stockname,chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
     listtime=['2016-04-28','2016-05-01','2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-08','2016-05-09','2016-05-10','2016-05-11']
     # listtime =getdate()
     listtime=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
     # return '<h3>please log in firstly.</h3>'
-    liststock=svm.svm_predict(15,0,'AAPL')
+    liststock=svm.svm_predict(15,0,stockname)
+    # return '<h3>please log in firstly.</h3>'
+    liststock1=[90,90,90,90,90,90,90,90,90,90,90,90,90,90,90]
     # liststock=[2,2,2,2,2,2,2,2,2,2]
     # pdb.set_trace()
     #return '<h3>please log in firstly.</h3>'
     chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
-    series = [{"name": 'Label1', "data": liststock}]
+    series = [{"name": 'SVM', "data": liststock},{"name": 'MLP', "data": liststock1}]
     # return '<h3>please log in firstly.</h3>'
-    title = {"text": 'SVM'}
+    title = {"text": 'Price in future 15 days'}
     xAxis = {"categories": listtime}
     yAxis = {"title": {"text": 'yAxis Label'}}
    # pdb.set_trace()
