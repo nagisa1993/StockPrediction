@@ -1,8 +1,8 @@
 from flask import Flask, session, request, redirect, url_for, render_template, abort, jsonify
 import sqlite3 as lite
 from flask import make_response
-#import svm
-# import MLP
+import svm
+import MLP
 import bayes
 import datetime
 import json
@@ -208,7 +208,7 @@ def predict(chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
     # listtime =getdate()
     listtime=[1,2,3,4,5,6,7,8,9,10]
     # return '<h3>please log in firstly.</h3>'
-    liststock=svm_predict(10,0,'AAPL')
+    liststock=svm.svm_predict(10,0,'AAPL')
     # liststock=[2,2,2,2,2,2,2,2,2,2]
     # pdb.set_trace()
     #return '<h3>please log in firstly.</h3>'
@@ -222,14 +222,7 @@ def predict(chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
    #  return '<h3>please log in firstly.</h3>'
     return render_template('predict.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
-def svm_predict(days, offset, name='YHOO'):
-    N = 30
-    X = np.arange(N).reshape(N, 1)
-    y = fetchdata.get_data(name).ravel()
-    Z = np.arange(N+offset, N+days+offset).reshape(days, 1)
-    svr_lin = SVR(kernel='linear', C=1e3)
-    y_lin = svr_lin.fit(X, y).predict(Z)
-    return list(y_lin)
+
 
 def getdate():
     name = session['name']
