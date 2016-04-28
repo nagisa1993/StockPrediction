@@ -192,15 +192,15 @@ def get_tasks():
 @app.route('/query/api/v1.0/get/tasks/<int:task_id>', methods=['GET'])
 def get_task(task_id):
     task = filter(lambda t: t['id'] == task_id, tasks)
-    if len(task) == 0:
-        not_found("Not Found")
+    # if len(task) == 0:
+    #     not_found("Not Found")
     return jsonify({'task': task[0]['queryresult']})
 
 @app.route('/query/api/v1.0/getjson/tasks/<int:task_id>', methods=['GET'])
 def get_task_json(task_id):
     task = filter(lambda t: t['id'] == task_id, tasks)
-    if len(task) == 0:
-        not_found("Not Found")
+    # if len(task) == 0:
+    #     not_found("Not Found")
     # return jsonify( task[0]['queryresult'])
     return listquery6
 
