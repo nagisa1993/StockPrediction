@@ -2,35 +2,46 @@
 
 {% block title %} index {% endblock %}
 
-{% block page_content %}
+{% block head %}
+{{ super()  }}
 
-<script src="http://code.highcharts.com/stock/highstock.js"></script>
-<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
-<script src="https://rawgithub.com/laff/technical-indicators/master/technical-indicators.src.js"></script>
-<div id="container" style="min-width: 500x; height: 400px; margin: 0 auto"></div>
-$(function() {
-
-    $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) {
-        $('#container').highcharts('StockChart', {
-
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script language="JavaScript" type="text/javascript" src="http://code.highcharts.com/stock/highstock.js"></script>
+		<script language="JavaScript" type="text/javascript" src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+		<script language="JavaScript" type="text/javascript" src="http://rawgit.com/laff/technical-indicators/master/technical-indicators.src.js"></script>
+		<script>
+		$(function() {
+    		 $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) {
+//            $.getJSON('data.json&callback=?', function(data) {
+       		 $('#container1').highcharts('StockChart', {
+    
             title : {
-                text : 'AAPL Stock Price'
+                text : 'Simple Moving Average (SMA) of AAPL stock price'
             },
-
+    
             subtitle: {
                 text: 'From may 15, 2006 to May 10, 2013'
             },
-            
+    
             xAxis: {
-                ordinal: false
+                type: 'datetime'
             },
-
+    
             yAxis: {
                 title : {
                     text : 'Price'
                 }
             },
-
+        
+            tooltip: {
+                crosshairs: true,
+                shared: true
+            },
+            
+			rangeSelector : {
+				selected : 1
+			},
+    
             legend: {
                 enabled: true,
                 layout: 'vertical',
@@ -38,22 +49,80 @@ $(function() {
                 verticalAlign: 'middle',
                 borderWidth: 0
             },
-            
+    
+            plotOptions: {
+                series: {
+                    marker: {
+                        enabled: false,
+                    }
+                }
+            },
+    
             series : [{
-                name: 'Stock Price',
+                name: 'AAPL Stock Price',
                 type : 'line',
                 id: 'primary',
                 data : data
             }, {
-                name: 'Linear Trendline',
+                name: '15-day SMA',
                 linkedTo: 'primary',
                 showInLegend: true,
-                enableMouseTracking: false,
                 type: 'trendline',
-                algorithm: 'linear'
+                algorithm: 'SMA',
+                periods: 15
+            }, {
+                name: '40-day SMA',
+                linkedTo: 'primary',
+                showInLegend: true,
+                type: 'trendline',
+                algorithm: 'SMA',
+                periods: 40
             }]
         });
     });
-
 });
+</script>
+{% endblock %}
+
+{% block page_content %}
+<header>
+    <div class="nav">
+	    <ul>
+	    <li class="search_nav"><a class="active" href="project.html">Search</a></li>
+	    <li class="predict"><a href="project2.html">Predict</a></li>
+	    <li class="login" style="float:right"><a href="#">Login</a></li>
+	    </ul>
+    </div>
+</header>
+
+<div class = "container">
+
+		<div class="img-block"></div>
+		<section class = "search">
+		<div>
+			<input type="text" class = "searchtext" id="stockid" name="stockid" placeholder="Input stock symbol">
+			<button class = "searchbtn" onclick="search()" id="searchbtn"><span>Search</span></button>
+		</div>
+		</section>
+
+
+	    <div>
+            <div id="container1" style="min-width: 500x; height: 500px; margin: 0 auto"></div>
+		</div>
+</div>
+
+<script>
+	function search(){
+
+	}
+
+	function login(){
+
+	}
+
+	function signup(){
+
+	}
+</script>
+
 {% endblock %}

@@ -2,7 +2,8 @@
 <html>
 {% block title %} project {% endblock %}
 <head>
-
+{% block head %}
+	 
 <style>
 /*****************************layout*****************************/
 	body {
@@ -205,6 +206,7 @@
 	    background-color: #555;
 	    color: white;
 	}
+
     .st_predictbtn{
  	background-color: #39d396;
     border: none;
@@ -253,6 +255,7 @@
 	}
 	
 </style>
+{% endblock %}
 </head>
 
 <body>
@@ -276,7 +279,11 @@
 			<button class = "searchbtn" onclick="search()" id="searchbtn"><span>Search</span></button>
 		</div>
 		</section>
-		
+
+
+	    <div>
+
+		</div>
 </div>
 
 <script>
