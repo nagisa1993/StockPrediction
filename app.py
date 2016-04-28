@@ -1,8 +1,8 @@
 from flask import Flask, session, request, redirect, url_for, render_template, abort, jsonify
 import sqlite3 as lite
 from flask import make_response
-import svm
-import MLP
+#import svm
+# import MLP
 import bayes
 import datetime
 import json
@@ -10,7 +10,10 @@ import calendar
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-
+#####
+import fetchdata
+import numpy as np
+from sklearn.svm import SVR
 
 app = Flask(__name__)
 
@@ -37,18 +40,19 @@ def index():
         #return '<h3>please log in firstly.</h3>'
         if request.form.values():
             # json = createjson(request.form['stockid'])
-
+            # return '<h3>please log in firstly.</h3>'
             # pdb.set_trace()
-            return render_template('predict.html', par = str(request.form['stockid']))
+            # return render_template('predict.html', par = str(request.form['stockid']))
+            return redirect(url_for('predict'))
     return render_template('index.html')
 
 @app.route('/search/')
 def search():
     return render_template('search.html')
 
-@app.route('/predict')
-def predict():
-    return render_template('predict.html')
+# @app.route('/predict')
+# def predict():
+#     return render_template('predict.html')
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -74,9 +78,9 @@ def createjson():
     # for x in range(1, 31):
     #     json_data.append([utc[x - 1], data[x - 1]])
 
-    b = '([1461110400000,107.13],[1461196800000,105.97],[1461283200000,105.68],[1461542400000,105.08],[1461628800000,104.35],[1461715200000,97.82]]);'
-
-    return json.dumps(b, separators=(',',','))
+    # b = '([1461110400000,107.13],[1461196800000,105.97],[1461283200000,105.68],[1461542400000,105.08],[1461628800000,104.35],[1461715200000,97.82]]);'
+    b = [[1461110400000,107.13],[1461196800000,105.97],[1461283200000,105.68],[1461542400000,105.08],[1461628800000,104.35],[1461715200000,97.82]]
+    # return json.dumps(b)
     # return json.dumps(json_data,separators=(',',','))
 
 
@@ -197,9 +201,49 @@ def create_task():
     }
     tasks.append(task)
     return jsonify({'task': task}), 201
+##############################graph
+@app.route('/predict')
+def predict(chartID = 'chart_ID', chart_type = 'line', chart_height = 350): 
+    listtime=['2016-04-28','2016-05-01','2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-08','2016-05-09','2016-05-10','2016-05-11']
+    # listtime =getdate()
+    listtime=[1,2,3,4,5,6,7,8,9,10]
+    # return '<h3>please log in firstly.</h3>'
+    liststock=svm_predict(10,0,'AAPL')
+    # liststock=[2,2,2,2,2,2,2,2,2,2]
+    # pdb.set_trace()
+    #return '<h3>please log in firstly.</h3>'
+    chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
+    series = [{"name": 'Label1', "data": liststock}]
+    # return '<h3>please log in firstly.</h3>'
+    title = {"text": 'SVM'}
+    xAxis = {"categories": listtime}
+    yAxis = {"title": {"text": 'yAxis Label'}}
+   # pdb.set_trace()
+   #  return '<h3>please log in firstly.</h3>'
+    return render_template('predict.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
+def svm_predict(days, offset, name='YHOO'):
+    N = 30
+    X = np.arange(N).reshape(N, 1)
+    y = fetchdata.get_data(name).ravel()
+    Z = np.arange(N+offset, N+days+offset).reshape(days, 1)
+    svr_lin = SVR(kernel='linear', C=1e3)
+    y_lin = svr_lin.fit(X, y).predict(Z)
+    return list(y_lin)
 
-
+def getdate():
+    name = session['name']
+    conn = lite.connect('StockHistory.db')
+    cursor = conn.cursor()
+    #where Symbol ='"+ name +"' and TadeTime between '"+session['begindate'] +"'and '"+session['enddate']+"'"
+    cursor.execute("select distinct TadeTime from HistoryValue where TadeTime between '2016-01-01'and '2016-01-10'")
+    array = cursor.fetchall()
+    listPrice =[]
+    for i in array:
+      listPrice.append(str(i[0]))
+    conn.commit()
+    cursor.close()
+    conn.close()
 ########################
 if __name__ == '__main__':
     # app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
