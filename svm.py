@@ -11,7 +11,7 @@ def svm_predict(days=10, offset=0, name='YHOO'):
     Z = np.arange(N+offset, N+days+offset).reshape(days, 1)
 
     # Fit regression model
-    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.018)
     # svr_lin = SVR(kernel='linear', C=1e3)
     # svr_poly = SVR(kernel='poly', C=1e3, degree=2)
     y_rbf = svr_rbf.fit(X, y).predict(Z)
@@ -24,4 +24,4 @@ def svm_predict(days=10, offset=0, name='YHOO'):
     return a
 
 if __name__=='__main__':
-    print svm_predict(100, 0, 'AAPL')
+    print svm_predict(15, 0, 'AAPL')

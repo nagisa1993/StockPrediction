@@ -17,4 +17,4 @@ def mlp_predict(days, offset, name='YHOO'):
     return a
 
 if __name__=='__main__':
-    print mlp_predict(15, 2, 'AAPL')
+    print mlp_predict(15, 0, 'AAPL')

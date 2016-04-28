@@ -23,4 +23,4 @@ def get_data(stock_name='YHOO'):
 
 
 if __name__=='__main__':
-    print get_data('AAPL')
+    print get_data('GOOG')

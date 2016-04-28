@@ -48,6 +48,23 @@ def index():
 
     return render_template('index.html')
 
+
+@app.route('/realtime', methods=['GET', 'POST'])
+def realtime():
+    if request.method == 'POST':
+        #pdb.set_trace()
+        #return '<h3>please log in firstly.</h3>'
+        if request.form.values():
+            # json = createjson(request.form['stockid'])
+            # return '<h3>please log in firstly.</h3>'
+            # pdb.set_trace()
+            return render_template('realtime.html', stockname=request.form['stockid'])
+            # return str(request.form['stockid'])
+            # return redirect(url_for('realtime', stockname=request.form['stockid']))
+
+    return render_template('realtime.html')
+
+
 @app.route('/search/')
 def search():
     return render_template('search.html')
@@ -187,9 +204,9 @@ def get_task_json(task_id):
     # return jsonify( task[0]['queryresult'])
     return listquery6
 
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+# @app.errorhandler(404)
+# def not_found(error):
+#     return make_response(jsonify({'error': 'Not found'}), 404)
 
 @app.route('/query/api/v1.0/post/tasks', methods=['POST'])
 def create_task():
@@ -204,26 +221,21 @@ def create_task():
     tasks.append(task)
     return jsonify({'task': task}), 201
 ##############################graph
-@app.route('/predict/<stockname>')
+@app.route('/predict/',methods=['GET','POST'])
+@app.route('/predict/<stockname>',methods=['GET','POST'])
 def predict(stockname,chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
-    listtime=['2016-04-28','2016-05-01','2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-08','2016-05-09','2016-05-10','2016-05-11']
+    # listtime=['2016-04-28','2016-05-01','2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-08','2016-05-09','2016-05-10','2016-05-11']
     # listtime =getdate()
     listtime=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-    # return '<h3>please log in firstly.</h3>'
     liststock=svm.svm_predict(15,0,stockname)
-    # return '<h3>please log in firstly.</h3>'
     liststock1= MLP.mlp_predict(15,0,stockname)
     # liststock=[2,2,2,2,2,2,2,2,2,2]
-    # pdb.set_trace()
-    #return '<h3>please log in firstly.</h3>'
     chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
     series = [{"name": 'SVM', "data": liststock},{"name": 'MLP', "data": liststock1}]
     # return '<h3>please log in firstly.</h3>'
     title = {"text": 'Price in future 15 days'}
     xAxis = {"categories": listtime}
     yAxis = {"title": {"text": 'yAxis Label'}}
-   # pdb.set_trace()
-   #  return '<h3>please log in firstly.</h3>'
     return render_template('predict.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
 

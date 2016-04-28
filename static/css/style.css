@@ -26,9 +26,10 @@ body {
 		opacity: 0;
 	}*/
 
-    .graph{
+    .graph.container1{
     	position: absolute;
     	background-color: #FFFFFF;
+		left: 200px;
     	top:25%;
     	width: 70%;
     	text-align: center;
