@@ -4,7 +4,7 @@ from sklearn.svm import SVR
 
 
 def svm_predict(days=10, offset=0, name='YHOO'):
-    N = 30
+    N = 100
     # Generate sample data
     X = np.arange(N).reshape(N, 1)
     y = fetchdata.get_data(name).ravel()

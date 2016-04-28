@@ -206,9 +206,9 @@ def create_task():
 def predict(chartID = 'chart_ID', chart_type = 'line', chart_height = 350): 
     listtime=['2016-04-28','2016-05-01','2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-08','2016-05-09','2016-05-10','2016-05-11']
     # listtime =getdate()
-    listtime=[1,2,3,4,5,6,7,8,9,10]
+    listtime=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
     # return '<h3>please log in firstly.</h3>'
-    liststock=svm.svm_predict(10,0,'AAPL')
+    liststock=svm.svm_predict(15,0,'AAPL')
     # liststock=[2,2,2,2,2,2,2,2,2,2]
     # pdb.set_trace()
     #return '<h3>please log in firstly.</h3>'
