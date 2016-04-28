@@ -2,6 +2,17 @@
 
 {% block title %} index {% endblock %}
 
-{% block head %}
-{{ super()  }}
+{% block header %}
+
+<header>
+
+    <div class="nav">
+	    <ul>
+	    <li class="search_nav"><a  href="/">Search</a></li>
+	    <li class="predict"><a class="active" href="index">Predict</a></li>
+	    <li class="login" style="float:right"><a href="#">Login</a></li>
+	    </ul>
+    </div>
+
+</header>
 {% endblock %}

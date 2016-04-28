@@ -4,12 +4,11 @@ from sklearn.svm import SVR
 
 
 def svm_predict(days=10, offset=0, name='YHOO'):
-    N = 30
+    N = 100
     # Generate sample data
     X = np.arange(N).reshape(N, 1)
     y = fetchdata.get_data(name).ravel()
     Z = np.arange(N+offset, N+days+offset).reshape(days, 1)
-
 
     # Fit regression model
     svr_rbf = SVR(kernel='rbf', C=1e3, gamma=0.1)
@@ -24,4 +23,4 @@ def svm_predict(days=10, offset=0, name='YHOO'):
     return list(y_rbf)
 
 if __name__=='__main__':
-    print svm_predict(10, 2, 'AAPL')
+    print svm_predict(100, 0, 'AAPL')

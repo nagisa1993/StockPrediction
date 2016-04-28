@@ -17,8 +17,8 @@
 
     <div class="nav">
 	    <ul>
-	    <li class="search_nav"><a class="active" href="search">Search</a></li>
-	    <li class="predict"><a href="predict">Predict</a></li>
+	    <li class="search_nav"><a class="active" href="/">Search</a></li>
+	    <li class="predict"><a href="index">Predict</a></li>
 	    <li class="login" style="float:right"><a href="#">Login</a></li>
 	    </ul>
     </div>
@@ -34,7 +34,7 @@
 		<div>
 			<input type="text" class = "searchtext" id="stockid" name="stockid" value="{{
           request.form.stockid }}"  placeholder="Input stock symbol">
-          	<input type="submit" class = "searchbtn" onclick="search()" id="searchbtn" value="Check">
+          	<input type="submit" class = "searchbtn"  id="searchbtn" value="GO">
 			<!-- <button type = "submit"  value="searchstock" ><span>Search</span></button> -->
 		</div>
 		</form>

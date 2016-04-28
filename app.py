@@ -1,9 +1,13 @@
-from flask import Flask, session, request, redirect, url_for, render_template
+from flask import Flask, session, request, redirect, url_for, render_template,
 import sqlite3 as lite
 import svm
-# import MLP
+import MLP
 import bayes
-import pdb
+import datetime
+import json
+import calendar
+import pandas as pd
+
 
 app = Flask(__name__)
 
@@ -14,17 +18,28 @@ app = Flask(__name__)
 # Session(app)
 
 @app.route('/', methods=['GET', 'POST'])
+def route():
+    if request.method == 'POST':
+        #pdb.set_trace()
+        # return '<h3>please log in firstly.</h3>'
+        if request.form.values():
+            # return redirect(url_for('search', par=str(request.form['stockid'])))
+            return render_template('search.html', par = str(request.form['stockid']))
+    return render_template('base.html')
+
+@app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         #pdb.set_trace()
         #return '<h3>please log in firstly.</h3>'
-        if 'Check' in request.form.values():
-            #return '<h3>please log in firstly.</h3>'
+        if request.form.values():
+            json = createjson(request.form['stockid'])
+
             # pdb.set_trace()
-            return render_template('search.html', par=str(request.form['stockid']))
+            return render_template('predict.html', par=str(request.form['stockid']))
     return render_template('index.html')
 
-@app.route('/search')
+@app.route('/search/')
 def search():
     return render_template('search.html')
 
@@ -36,8 +51,23 @@ def predict():
 def page_not_found(e):
     return render_template('404.html'), 404
 
+def createjson(name):
+    data = []
+    predicted_data = svm.svm_predict(30, 0, name)
+    for x in predicted_data:
+        data.append(round(x, 3))
 
+    utc = []
 
+    today = datetime.date.today()
+    thirtyday = datetime.timedelta(days=30)
+
+    daterange = pd.date_range(today, today + thirtyday)
+    for single_date in daterange:
+        utc.append(calendar.timegm(single_date.timetuple()))
+
+    json_data = ([[x, y] for x in utc for y in data])
+    return json.dumps(json_data)
 
 
 @app.route('/signin', methods=['POST'])
