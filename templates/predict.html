@@ -11,9 +11,11 @@
 		<script language="JavaScript" type="text/javascript" src="http://rawgit.com/laff/technical-indicators/master/technical-indicators.src.js"></script>
 		<script>
 		$(function() {
-    		 $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename={{par}}-c.json&callback=?', function(data) {
-//            $.getJSON('data.json', function(data) {
-       		 $('#container1').highcharts('StockChart', {
+//             $.getJSON('{{addr}}', function(data) {
+//    		 $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename={{par}}-c.json&callback=?', function(data) {
+//            $.getJSON('', function(data) {
+            $.getJSON('http://localhost:5000/query/api/v1.0/getjson/tasks/6', function(data) {
+            $('#container1').highcharts('StockChart', {
 
             title : {
                 text : 'Simple Moving Average (SMA) of AAPL stock price'

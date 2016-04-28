@@ -1,5 +1,6 @@
-from flask import Flask, session, request, redirect, url_for, render_template,
+from flask import Flask, session, request, redirect, url_for, render_template, abort, jsonify
 import sqlite3 as lite
+from flask import make_response
 import svm
 import MLP
 import bayes
@@ -7,6 +8,8 @@ import datetime
 import json
 import calendar
 import pandas as pd
+from dateutil.relativedelta import relativedelta
+
 
 
 app = Flask(__name__)
@@ -33,10 +36,10 @@ def index():
         #pdb.set_trace()
         #return '<h3>please log in firstly.</h3>'
         if request.form.values():
-            json = createjson(request.form['stockid'])
+            # json = createjson(request.form['stockid'])
 
             # pdb.set_trace()
-            return render_template('predict.html', par=str(request.form['stockid']))
+            return render_template('predict.html', par = str(request.form['stockid']))
     return render_template('index.html')
 
 @app.route('/search/')
@@ -51,23 +54,30 @@ def predict():
 def page_not_found(e):
     return render_template('404.html'), 404
 
-def createjson(name):
-    data = []
-    predicted_data = svm.svm_predict(30, 0, name)
-    for x in predicted_data:
-        data.append(round(x, 3))
+def createjson():
+    # data = []
+    # predicted_data = svm.svm_predict(30, 0, name)
+    # for x in predicted_data:
+    #     data.append(round(x, 3))
+    #
+    # utc = []
+    #
+    # today = datetime.date.today()
+    # thirtyday = datetime.timedelta(days=30)
+    #
+    # daterange = pd.date_range(today, today + thirtyday)
+    # for single_date in daterange:
+    #     utc.append(calendar.timegm(single_date.timetuple()))
+    #
+    # json_data = []
+    #
+    # for x in range(1, 31):
+    #     json_data.append([utc[x - 1], data[x - 1]])
 
-    utc = []
+    b = '([1461110400000,107.13],[1461196800000,105.97],[1461283200000,105.68],[1461542400000,105.08],[1461628800000,104.35],[1461715200000,97.82]]);'
 
-    today = datetime.date.today()
-    thirtyday = datetime.timedelta(days=30)
-
-    daterange = pd.date_range(today, today + thirtyday)
-    for single_date in daterange:
-        utc.append(calendar.timegm(single_date.timetuple()))
-
-    json_data = ([[x, y] for x in utc for y in data])
-    return json.dumps(json_data)
+    return json.dumps(b, separators=(',',','))
+    # return json.dumps(json_data,separators=(',',','))
 
 
 @app.route('/signin', methods=['POST'])
@@ -85,23 +95,108 @@ def signin():
         # return render_template('problem2.html', form=form)
     return '<h3>Bad username or password.</h3>'
 
+def getquery(strquery):
+    conn = lite.connect('StockHistory.db')
+    cursor = conn.cursor()
+    #where Symbol ='"+ name +"' and TadeTime between '"+session['begindate'] +"'and '"+session['enddate']+"'"
+    cursor.execute(strquery)
+    array = cursor.fetchall()
+    listPrice =[]
+    # for i in array:
+    #   listPrice.append(str(i[0]))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    #pdb.set_trace()
+    return array
 
-# @app.route('/predict', methods=['POST'])
-# def predict():
-#     if request.method == 'POST':
-#         if session['user'] == "":
-#             # return session['user']
-#             return '<h3>please log in firstly.</h3>'
-#         session['name'] = request.form['s1']
-#         session['begindate'] = request.form['begindate']
-#         session['enddate'] = request.form['enddate']
-#         # return session['begindate']
-#         if 'Check' in request.form.values():
-#             return redirect(url_for('baz'))
-#             # return session['begindate']
-#     elif request.method == 'GET':
-#         return render_template('contact.html', form=form)
+lastdate = getquery("select Max(TadeTime) from HistoryValue")
+tenday = datetime.timedelta(days=10)
+requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d') - tenday
+requiredate=str(requiredate)[:-9]
+listquery2 = getquery("select Max(ClosePrice) from HistoryValue where Symbol = 'AAPL' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"'")
+tenday = datetime.timedelta(days=365)
+requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d') - tenday
+requiredate=str(requiredate)[:-9]
+listquery3 = getquery("select Avg(ClosePrice) from HistoryValue where Symbol = 'AAPL' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"'")
 
+requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d')  - relativedelta(years=1)
+requiredate=str(requiredate)[:-9]
+listquery4 = getquery("select Symbol, min(ClosePrice) from HistoryValue where TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol"  )
+
+data = getquery("select Symbol, min(ClosePrice) from HistoryValue where Symbol ='GOOG' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol"  )
+listquery5 = getquery("select Symbol, Avg(ClosePrice) from HistoryValue where TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol having Avg(ClosePrice) < '"+str(data[0][1])+"' "  )
+listquery6 = createjson()
+tasks = [
+    {
+        'id': 1,
+        'query': "Show the list of all companies in the database along with their latest stock price.",
+        'queryresult': getquery("Select distinct Symbol, ClosePrice from HistoryValue group by  Symbol "),
+    },
+    {
+        'id': 2,
+        'query': "Get the highest stock price of Google in the last ten days",
+        'queryresult': listquery2
+    },
+    {
+        'id': 3,
+        'query': "Average stock price of Microsoft in the latest one year",
+        'queryresult':  listquery3,
+    },
+    {
+        'id': 4,
+        'query':"Lowest stock price for each company in the latest one year",
+        'queryresult': listquery4,
+    },
+    {
+        'id': 5,
+        'query': "List the ids of companies along with their name who have the average stock price lesser than the lowest of Google in the latest one year",
+        'queryresult': listquery5
+    }
+    ,
+    {
+        'id': 6,
+        'query': "jsondata",
+        'queryresult': listquery6
+    }
+]
+
+@app.route('/query/api/v1.0/get/tasks', methods=['GET'])
+def get_tasks():
+    return jsonify({'tasks': tasks})
+
+
+@app.route('/query/api/v1.0/get/tasks/<int:task_id>', methods=['GET'])
+def get_task(task_id):
+    task = filter(lambda t: t['id'] == task_id, tasks)
+    if len(task) == 0:
+        not_found("Not Found")
+    return jsonify({'task': task[0]['queryresult']})
+
+@app.route('/query/api/v1.0/getjson/tasks/<int:task_id>', methods=['GET'])
+def get_task_json(task_id):
+    task = filter(lambda t: t['id'] == task_id, tasks)
+    if len(task) == 0:
+        not_found("Not Found")
+    # return jsonify( task[0]['queryresult'])
+    return listquery6
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+@app.route('/query/api/v1.0/post/tasks', methods=['POST'])
+def create_task():
+    if not request.json or not 'title' in request.json:
+        abort(400)
+    task = {
+        'id': tasks[-1]['id'] + 1,
+        'title': request.json['title'],
+        'description': request.json.get('description', ""),
+        'done': False
+    }
+    tasks.append(task)
+    return jsonify({'task': task}), 201
 
 
 
