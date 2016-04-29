@@ -16,10 +16,16 @@ def bayes_predict(name='YHOO'):
     Y = fetchdata.get_data(name)
     Y = Y[-10:]
     print 'The trend is :'
-    print Y
-    # print N
     predicted_price = getm(N+1)[0][0]
-    return predicted_price
+    print predicted_price
+    price=[predicted_price]
+    Y = Y.reshape(1,10).tolist()
+    w=[]
+    w=Y[0]
+    w.append(price[0])
+    print w
+    a = [round(i, 3) for i in w]
+    return a
 
 # Y = fetchdata.get_data('YHOO')
 
@@ -84,7 +90,6 @@ def getInverseS():
     temp = np.zeros([M + 1, 1])
     fy2 = getfy(N + 1)
     for i in range(1, N + 1):
-        print i
         fy = getfy(i)
 
         # temp = temp + fy

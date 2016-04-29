@@ -50,19 +50,24 @@ def index():
 
 
 @app.route('/realtime', methods=['GET', 'POST'])
-def realtime():
+def realtime(chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
     if request.method == 'POST':
-        #pdb.set_trace()
-        #return '<h3>please log in firstly.</h3>'
-        if request.form.values():
-            # json = createjson(request.form['stockid'])
-            # return '<h3>please log in firstly.</h3>'
-            # pdb.set_trace()
-            return render_template('realtime.html', stockname=request.form['stockid'])
-            # return str(request.form['stockid'])
-            # return redirect(url_for('realtime', stockname=request.form['stockid']))
+        result = bayes.bayes_predict(request.form['stockid'])
+        listtime = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
+        # liststock=[2,2,2,2,2,2,2,2,2,2]
+        chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
+        series = [{"name": 'The 11th price is the predicted data', "data": result}]
+        # return '<h3>please log in firstly.</h3>'
+        title = {"text": 'Real time predicted price'}
+        xAxis = {"categories": listtime}
+        yAxis = {"title": {"text": 'yAxis Label'}}
+        return render_template('realtime.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis,
+                               yAxis=yAxis, text=result[-1])
+
+        # return render_template('realtime.html',text=result[-1])
     return render_template('realtime.html')
+
 
 
 @app.route('/search/')
@@ -77,30 +82,7 @@ def search():
 def page_not_found(e):
     return render_template('404.html'), 404
 
-def createjson():
-    # data = []
-    # predicted_data = svm.svm_predict(30, 0, name)
-    # for x in predicted_data:
-    #     data.append(round(x, 3))
-    #
-    # utc = []
-    #
-    # today = datetime.date.today()
-    # thirtyday = datetime.timedelta(days=30)
-    #
-    # daterange = pd.date_range(today, today + thirtyday)
-    # for single_date in daterange:
-    #     utc.append(calendar.timegm(single_date.timetuple()))
-    #
-    # json_data = []
-    #
-    # for x in range(1, 31):
-    #     json_data.append([utc[x - 1], data[x - 1]])
 
-    # b = '([1461110400000,107.13],[1461196800000,105.97],[1461283200000,105.68],[1461542400000,105.08],[1461628800000,104.35],[1461715200000,97.82]]);'
-    b = [[1461110400000,107.13],[1461196800000,105.97],[1461283200000,105.68],[1461542400000,105.08],[1461628800000,104.35],[1461715200000,97.82]]
-    # return json.dumps(b)
-    # return json.dumps(json_data,separators=(',',','))
 
 
 @app.route('/signin', methods=['POST'])
@@ -150,7 +132,7 @@ def query3(stockname, Ddays=365):
     return getquery("select Avg(ClosePrice) from HistoryValue where Symbol = '" +stockname +"' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"'")
 
 def query4(stockname, Yyears=1):
-    trequiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d')  - relativedelta(years=Yyears)
+    requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d')  - relativedelta(years=Yyears)
     requiredate=str(requiredate)[:-9]
     return getquery("select Symbol, min(ClosePrice) from HistoryValue where TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol"  )
 
@@ -189,18 +171,18 @@ def get_task5(stock_name,Years):
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-@app.route('/query/api/v1.0/post/tasks', methods=['POST'])
-def create_task():
-    if not request.json or not 'title' in request.json:
-        abort(400)
-    task = {
-        'id': tasks[-1]['id'] + 1,
-        'title': request.json['title'],
-        'description': request.json.get('description', ""),
-        'done': False
-    }
-    tasks.append(task)
-    return jsonify({'task': task}), 201
+# @app.route('/query/api/v1.0/post/tasks', methods=['POST'])
+# def create_task():
+#     if not request.json or not 'title' in request.json:
+#         abort(400)
+#     task = {
+#         'id': tasks[-1]['id'] + 1,
+#         'title': request.json['title'],
+#         'description': request.json.get('description', ""),
+#         'done': False
+#     }
+#     tasks.append(task)
+#     return jsonify({'task': task}), 201
 ##############################graph
 
 @app.route('/predict/',methods=['GET','POST'])
