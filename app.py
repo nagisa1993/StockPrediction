@@ -44,7 +44,8 @@ def index():
             # pdb.set_trace()
             # return render_template('predict.html', par = str(request.form['stockid']))
             # return str(request.form['stockid'])
-            return redirect(url_for('predict', stockname=request.form['stockid']))
+            # return redirect(url_for('predict'))
+            return render_template('predict.html')
 
     return render_template('index.html')
 
@@ -54,8 +55,6 @@ def realtime(chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
     if request.method == 'POST':
         result = bayes.bayes_predict(request.form['stockid'])
         listtime = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-
-        # liststock=[2,2,2,2,2,2,2,2,2,2]
         chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
         series = [{"name": 'The 11th price is the predicted data', "data": result}]
         # return '<h3>please log in firstly.</h3>'
@@ -64,13 +63,27 @@ def realtime(chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
         yAxis = {"title": {"text": 'yAxis Label'}}
         return render_template('realtime.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis,
                                yAxis=yAxis, text=result[-1])
-
-        # return render_template('realtime.html',text=result[-1])
     return render_template('realtime.html')
 
+@app.route('/predict', methods=['GET', 'POST'])
+def predict(chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
+    if request.method == 'POST':
+        listtime = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        liststock = svm.svm_predict(15, 0, str(request.form['stockid']))
+        liststock1 = MLP.mlp_predict(15, 0, str(request.form['stockid']))
+        chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
+        series = [{"name": 'SVM', "data": liststock}, {"name": 'MLP', "data": liststock1}]
+        # return '<h3>please log in firstly.</h3>'
+        title = {"text": 'Price in future 15 days'}
+        xAxis = {"categories": listtime}
+        yAxis = {"title": {"text": 'yAxis Label'}}
+        return render_template('predict.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis,
+                               yAxis=yAxis)
+    return render_template('predict.html')
 
 
-@app.route('/search/')
+
+@app.route('/search')
 def search():
     return render_template('search.html')
 
@@ -185,22 +198,6 @@ def not_found(error):
 #     return jsonify({'task': task}), 201
 ##############################graph
 
-@app.route('/predict/',methods=['GET','POST'])
-@app.route('/predict/<stockname>',methods=['GET','POST'])
-def predict(stockname,chartID = 'chart_ID', chart_type = 'line', chart_height = 350):
-    # listtime=['2016-04-28','2016-05-01','2016-05-02','2016-05-03','2016-05-04','2016-05-05','2016-05-08','2016-05-09','2016-05-10','2016-05-11']
-    # listtime =getdate()
-    listtime=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-    liststock=svm.svm_predict(15,0,stockname)
-    liststock1= MLP.mlp_predict(15,0,stockname)
-    # liststock=[2,2,2,2,2,2,2,2,2,2]
-    chart = {"renderTo": chartID, "type": chart_type, "height": chart_height,}
-    series = [{"name": 'SVM', "data": liststock},{"name": 'MLP', "data": liststock1}]
-    # return '<h3>please log in firstly.</h3>'
-    title = {"text": 'Price in future 15 days'}
-    xAxis = {"categories": listtime}
-    yAxis = {"title": {"text": 'yAxis Label'}}
-    return render_template('predict.html', chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
 
 
