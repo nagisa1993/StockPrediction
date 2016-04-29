@@ -1,7 +1,7 @@
 import sqlite3
 import numpy as np
 import math
-import fetchdata
+import fetchdata2
 import csv
 import itertools
 
@@ -13,17 +13,17 @@ N = 10
 def bayes_predict(name='YHOO'):
     # #read data from db
     global Y
-    Y = fetchdata.get_data(name)
+    Y = fetchdata2.get_data(name)
     Y = Y[-10:]
-    print 'The trend is :'
+    # print 'The trend is :'
     predicted_price = getm(N+1)[0][0]
-    print predicted_price
+    # print predicted_price
     price=[predicted_price]
     Y = Y.reshape(1,10).tolist()
     w=[]
     w=Y[0]
     w.append(price[0])
-    print w
+    # print w
     a = [round(i, 3) for i in w]
     return a
 
