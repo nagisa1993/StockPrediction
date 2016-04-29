@@ -121,7 +121,6 @@ def signin():
 def getquery(strquery):
     conn = lite.connect('StockHistory.db')
     cursor = conn.cursor()
-    #where Symbol ='"+ name +"' and TadeTime between '"+session['begindate'] +"'and '"+session['enddate']+"'"
     cursor.execute(strquery)
     array = cursor.fetchall()
     listPrice =[]
@@ -130,83 +129,65 @@ def getquery(strquery):
     conn.commit()
     cursor.close()
     conn.close()
-    #pdb.set_trace()
     return array
 
 lastdate = getquery("select Max(TadeTime) from HistoryValue")
-tenday = datetime.timedelta(days=10)
-requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d') - tenday
-requiredate=str(requiredate)[:-9]
-listquery2 = getquery("select Max(ClosePrice) from HistoryValue where Symbol = 'AAPL' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"'")
-tenday = datetime.timedelta(days=365)
-requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d') - tenday
-requiredate=str(requiredate)[:-9]
-listquery3 = getquery("select Avg(ClosePrice) from HistoryValue where Symbol = 'AAPL' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"'")
 
-requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d')  - relativedelta(years=1)
-requiredate=str(requiredate)[:-9]
-listquery4 = getquery("select Symbol, min(ClosePrice) from HistoryValue where TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol"  )
-
-data = getquery("select Symbol, min(ClosePrice) from HistoryValue where Symbol ='GOOG' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol"  )
-listquery5 = getquery("select Symbol, Avg(ClosePrice) from HistoryValue where TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol having Avg(ClosePrice) < '"+str(data[0][1])+"' "  )
-listquery6 = createjson()
-tasks = [
-    {
-        'id': 1,
-        'query': "Show the list of all companies in the database along with their latest stock price.",
-        'queryresult': getquery("Select distinct Symbol, ClosePrice from HistoryValue group by  Symbol "),
-    },
-    {
-        'id': 2,
-        'query': "Get the highest stock price of Google in the last ten days",
-        'queryresult': listquery2
-    },
-    {
-        'id': 3,
-        'query': "Average stock price of Microsoft in the latest one year",
-        'queryresult':  listquery3,
-    },
-    {
-        'id': 4,
-        'query':"Lowest stock price for each company in the latest one year",
-        'queryresult': listquery4,
-    },
-    {
-        'id': 5,
-        'query': "List the ids of companies along with their name who have the average stock price lesser than the lowest of Google in the latest one year",
-        'queryresult': listquery5
-    }
-    ,
-    {
-        'id': 6,
-        'query': "jsondata",
-        'queryresult': listquery6
-    }
-]
-
-@app.route('/query/api/v1.0/get/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
+def query1():
+    return getquery("Select distinct Symbol, ClosePrice from HistoryValue group by  Symbol ")
 
 
-@app.route('/query/api/v1.0/get/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
-    # if len(task) == 0:
-    #     not_found("Not Found")
-    return jsonify({'task': task[0]['queryresult']})
+def query2(stockname, Ddays=10):
+    tenday = datetime.timedelta(days=Ddays)
+    requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d') - tenday
+    requiredate=str(requiredate)[:-9]
+    return getquery("select Max(ClosePrice) from HistoryValue where Symbol = '" +stockname +"' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"'")
 
-@app.route('/query/api/v1.0/getjson/tasks/<int:task_id>', methods=['GET'])
-def get_task_json(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
-    # if len(task) == 0:
-    #     not_found("Not Found")
-    # return jsonify( task[0]['queryresult'])
-    return listquery6
+def query3(stockname, Ddays=365):
+    tenday = datetime.timedelta(days=Ddays)
+    requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d') - tenday
+    requiredate=str(requiredate)[:-9]
+    return getquery("select Avg(ClosePrice) from HistoryValue where Symbol = '" +stockname +"' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"'")
 
-# @app.errorhandler(404)
-# def not_found(error):
-#     return make_response(jsonify({'error': 'Not found'}), 404)
+def query4(stockname, Yyears=1):
+    trequiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d')  - relativedelta(years=Yyears)
+    requiredate=str(requiredate)[:-9]
+    return getquery("select Symbol, min(ClosePrice) from HistoryValue where TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol"  )
+
+def query5(stockname, Yyears=365):
+    requiredate = datetime.datetime.strptime(str(lastdate[0][0]), '%Y-%m-%d')  - relativedelta(years=Yyears)
+    requiredate=str(requiredate)[:-9]
+    data = getquery("select Symbol, min(ClosePrice) from HistoryValue where Symbol ='GOOG' and TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol"  )
+    return getquery("select Symbol, Avg(ClosePrice) from HistoryValue where TadeTime between '" + requiredate +"'and '"+lastdate[0][0]+"' group by Symbol having Avg(ClosePrice) < '"+str(data[0][1])+"' "  )
+
+
+#problem1
+@app.route('/query/api/v1.0/get/task1', methods=['GET'])
+def get_task1():
+    return json.dumps(query1())
+# problem2
+@app.route('/query/api/v1.0/get/task2/<string:stock_name>/<int:tendays>', methods=['GET'])
+def get_task2(stock_name,tendays):
+    return json.dumps(query2(stock_name,tendays)[0])
+
+#problem3
+@app.route('/query/api/v1.0/get/task3/<string:stock_name>/<int:tendays>', methods=['GET'])
+def get_task3(stock_name,tendays):
+    return json.dumps(query3(stock_name,tendays)[0])
+
+#problem3
+@app.route('/query/api/v1.0/get/task4/<string:stock_name>/<int:Years>', methods=['GET'])
+def get_task4(stock_name,Years):
+    return json.dumps(query3(stock_name,Years)[0])
+
+#problem3
+@app.route('/query/api/v1.0/get/task5/<string:stock_name>/<int:Years>', methods=['GET'])
+def get_task5(stock_name,Years):
+    return json.dumps(query3(stock_name,Years)[0])
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 @app.route('/query/api/v1.0/post/tasks', methods=['POST'])
 def create_task():
@@ -221,6 +202,7 @@ def create_task():
     tasks.append(task)
     return jsonify({'task': task}), 201
 ##############################graph
+
 @app.route('/predict/',methods=['GET','POST'])
 @app.route('/predict/<stockname>',methods=['GET','POST'])
 def predict(stockname,chartID = 'chart_ID', chart_type = 'line', chart_height = 350):

@@ -14,8 +14,10 @@ def bayes_predict(name='YHOO'):
     # #read data from db
     global Y
     Y = fetchdata.get_data(name)
+    Y = Y[-10:]
     print 'The trend is :'
     print Y
+    # print N
     predicted_price = getm(N+1)[0][0]
     return predicted_price
 
@@ -82,6 +84,7 @@ def getInverseS():
     temp = np.zeros([M + 1, 1])
     fy2 = getfy(N + 1)
     for i in range(1, N + 1):
+        print i
         fy = getfy(i)
 
         # temp = temp + fy
@@ -121,7 +124,7 @@ def getm(x):
 
 
 if __name__=='__main__':
-    print bayes_predict('AAPL')
+    print bayes_predict('TWTR')
 
 # price = bayes_predict('AAPL')
 # print 'the predicted price is %f' % price
